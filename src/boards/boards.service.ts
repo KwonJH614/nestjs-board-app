@@ -4,6 +4,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { Board } from './board.entity';
 import { BoardStatus } from './board-status.enum';
 
+// Custom Repository
 @Injectable()
 export class BoardsService {
   constructor(private readonly boardRepository: BoardRepository) {}
@@ -22,7 +23,7 @@ export class BoardsService {
   //  console.log('result', result);
   // }
 
-  // TypeORM 0.3 version
+  // TypeORM 0.3 version 
   async deleteBoard(id : number): Promise<void> {
     const result = await this.boardRepository.deleteBoard(id); 
   }
