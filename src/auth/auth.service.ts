@@ -34,4 +34,35 @@ export class AuthService {
       }
     }
   }
+
+  async signIn(authDto : AuthDto): Promise<{accessToken : string}> {
+    const { username, password } = authDto;
+
+    // TypeORM 0.2 version
+    // const user = this.userRepository.findOne({username});
+
+    // TypeORM 0.3 version
+    const user = await this.userRepository.findOne({
+      where : { username : username }
+    });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // 유저 토큰 생성 ( Secret + Payload )
+      const payload = { username };
+      const accessToken = await this.jwtService.sign(payload);
+
+      return { accessToken };
+    } else {
+      throw new UnauthorizedException('login failed');
+    }
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const result = await this.userRepository.delete(id);
+    
+    if (result.affected === 0) {
+        throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+  }
+
 }
